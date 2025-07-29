@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # Servicio de la aplicación Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: monitorias_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - monitorias_network
+
+  # Servidor web Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: monitorias_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - monitorias_network
+    depends_on:
+      - app
+
+  # Base de datos MySQL
+  db:
+    image: mysql:8.0
+    container_name: monitorias_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-monitorias}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_USER: ${DB_USERNAME:-monitorias}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3307:3306" # Cambiado de 3306 a 3307 para evitar conflictos con el puerto 3306 de phpmyadmin
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - monitorias_network
+
+  # Redis para caché y sesiones
+  redis:
+    image: redis:alpine
+    container_name: monitorias_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - monitorias_network
+
+  # phpMyAdmin para gestión de base de datos
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: monitorias_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USERNAME:-monitorias}
+      PMA_PASSWORD: ${DB_PASSWORD:-root}
+    networks:
+      - monitorias_network
+    depends_on:
+      - db
+
+networks:
+  monitorias_network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local 
