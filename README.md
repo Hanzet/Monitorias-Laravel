@@ -1,61 +1,306 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Sistema de Monitorías - Laravel con Docker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📋 Descripción del Proyecto
 
-## About Laravel
+Sistema de gestión de monitorías desarrollado con Laravel 12 y Docker. Este proyecto incluye una API REST completa para la gestión de usuarios, autenticación y monitorías académicas.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🐳 Configuración con Docker
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Requisitos Previos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Docker Desktop** instalado y funcionando
+- **Git** para clonar el repositorio
+- **WSL2** habilitado (recomendado para Windows)
 
-## Learning Laravel
+### 🚀 Inicio Rápido
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clonar el proyecto**
+   ```bash
+   git clone <tu-repositorio>
+   cd monitorias
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. **Configurar variables de entorno**
+   ```bash
+   cp .env.example .env
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Editar `.env` para Docker**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=monitorias
+   DB_USERNAME=monitorias
+   DB_PASSWORD=root
+   
+   REDIS_HOST=redis
+   REDIS_PORT=6379
+   
+   APP_ENV=local
+   APP_DEBUG=true
+   ```
 
-## Laravel Sponsors
+4. **Inicializar con Docker**
+   ```bash
+   # Usando Makefile (recomendado)
+   make init
+   
+   # O manualmente
+   docker-compose up -d --build
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Comandos Principales
 
-### Premium Partners
+### Usando Makefile (Recomendado)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+make help          # Ver todos los comandos disponibles
+make up            # Levantar contenedores
+make down          # Detener contenedores
+make restart       # Reiniciar contenedores
+make logs          # Ver logs en tiempo real
+make shell         # Acceder al contenedor de la aplicación
+make migrate       # Ejecutar migraciones
+make seed          # Ejecutar seeders
+make test          # Ejecutar tests
+make cache         # Limpiar caché de Laravel
+make optimize      # Optimizar para producción
+```
 
-## Contributing
+### Usando Docker Compose
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Gestión de contenedores
+docker-compose up -d          # Levantar en background
+docker-compose down           # Detener
+docker-compose restart        # Reiniciar
+docker-compose logs -f        # Ver logs
 
-## Code of Conduct
+# Comandos de Laravel
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan db:seed
+docker-compose exec app composer install
+docker-compose exec app php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🌐 URLs de Acceso
 
-## Security Vulnerabilities
+| Servicio        | URL                       | Descripción              |
+| --------------- | ------------------------- | ------------------------ |
+| **Laravel App** | http://localhost:8000     | Aplicación principal     |
+| **phpMyAdmin**  | http://localhost:8080     | Gestión de base de datos |
+| **API Docs**    | http://localhost:8000/api | Documentación de la API  |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🗄️ Base de Datos
 
-## License
+### Credenciales MySQL
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Host:** `db` (dentro de Docker) o `localhost` (desde tu máquina)
+- **Puerto:** `3307` (externo) / `3306` (interno)
+- **Base de datos:** `monitorias`
+- **Usuario:** `monitorias`
+- **Contraseña:** `root`
+
+### Acceso desde phpMyAdmin
+
+- **URL:** http://localhost:8080
+- **Usuario:** `monitorias`
+- **Contraseña:** `root`
+
+## 🔧 Configuración de Servicios
+
+### Estructura de Docker
+
+```
+docker/
+├── nginx/
+│   └── conf.d/
+│       └── app.conf          # Configuración de Nginx
+├── php/
+│   └── local.ini             # Configuración de PHP
+├── mysql/
+│   ├── data/                 # Datos de MySQL
+│   └── my.cnf                # Configuración de MySQL
+└── init.sh                   # Script de inicialización
+```
+
+### Servicios Incluidos
+
+| Servicio    | Imagen           | Puerto | Descripción                    |
+| ----------- | ---------------- | ------ | ------------------------------ |
+| **app**     | monitorias-app   | 9000   | Laravel con PHP 8.2-FPM        |
+| **nginx**   | nginx:alpine     | 8000   | Servidor web                   |
+| **db**      | mysql:8.0        | 3307   | Base de datos MySQL            |
+| **redis**   | redis:alpine     | 6379   | Caché y sesiones               |
+| **phpmyadmin** | phpmyadmin/phpmyadmin | 8080 | Gestión de BD                |
+
+## 🚨 Problemas Resueltos
+
+### 1. Error de Laravel Telescope
+
+**Problema:** Error durante la construcción de Docker:
+```
+Class "Laravel\Telescope\TelescopeApplicationServiceProvider" not found
+```
+
+**Solución:** Removimos el `TelescopeServiceProvider` del registro de providers en `bootstrap/providers.php` ya que Laravel Telescope está en `require-dev` y no se instala en producción.
+
+**Archivo modificado:** `bootstrap/providers.php`
+```php
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    // TelescopeServiceProvider removido
+];
+```
+
+### 2. Conflicto de Puertos MySQL
+
+**Problema:** Puerto 3306 ocupado por XAMPP
+```
+Error response from daemon: ports are not available: exposing port TCP 0.0.0.0:3306
+```
+
+**Solución:** Cambiamos el puerto externo de MySQL de 3306 a 3307 en `docker-compose.yml`.
+
+**Archivo modificado:** `docker-compose.yml`
+```yaml
+ports:
+  - "3307:3306"  # Puerto externo 3307, interno 3306
+```
+
+## 🔍 Troubleshooting
+
+### Problemas Comunes
+
+#### 1. Puerto 8000 ocupado
+```bash
+# Cambiar puerto en docker-compose.yml
+ports:
+  - "8001:80"  # Cambiar 8000 por 8001
+```
+
+#### 2. Permisos de archivos
+```bash
+make permissions
+# O
+docker-compose exec app chmod -R 775 storage bootstrap/cache
+```
+
+#### 3. Limpiar caché
+```bash
+make cache
+# O
+docker-compose exec app php artisan cache:clear
+```
+
+#### 4. Reconstruir contenedores
+```bash
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+### Logs y Debugging
+
+```bash
+# Ver logs de todos los servicios
+make logs
+
+# Ver logs de un servicio específico
+docker-compose logs app
+docker-compose logs nginx
+docker-compose logs db
+```
+
+## 📊 Monitoreo
+
+### Estado de contenedores
+```bash
+make status
+# O
+docker-compose ps
+```
+
+### Uso de recursos
+```bash
+docker stats
+```
+
+## 🚀 Desarrollo
+
+### Acceder al contenedor
+```bash
+make shell
+# O
+docker-compose exec app bash
+```
+
+### Instalar nuevas dependencias
+```bash
+make composer cmd="require package/name"
+# O
+docker-compose exec app composer require package/name
+```
+
+### Ejecutar comandos de Artisan
+```bash
+make artisan cmd="make:controller UserController"
+# O
+docker-compose exec app php artisan make:controller UserController
+```
+
+### Ejecutar tests
+```bash
+make test
+# O
+docker-compose exec app php artisan test
+```
+
+## 🔒 Seguridad
+
+### Cambiar credenciales por defecto
+
+1. Editar `docker-compose.yml`
+2. Cambiar `DB_PASSWORD` y `MYSQL_ROOT_PASSWORD`
+3. Actualizar `.env`
+4. Reconstruir contenedores
+
+### Configurar SSL
+
+Agregar certificados SSL en la configuración de Nginx.
+
+## 📚 Documentación Adicional
+
+- [API Documentation](API_DOCUMENTATION.md) - Documentación completa de la API
+- [Postman Collection](postman_collection.json) - Colección de Postman para testing
+- [Docker README](DOCKER_README.md) - Guía detallada de Docker
+- [Postman Routes](POSTMAN_ROUTES.md) - Rutas disponibles en Postman
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Backend:** Laravel 12
+- **Base de Datos:** MySQL 8.0
+- **Caché:** Redis
+- **Servidor Web:** Nginx
+- **PHP:** 8.2-FPM
+- **Contenedores:** Docker & Docker Compose
+- **Autenticación:** Laravel Sanctum
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+---
+
+**¡Disfruta desarrollando con Docker! 🐳**
