@@ -43,7 +43,7 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     ports:
-      - "3307:3306" # Cambiado de 3306 a 3307 para evitar conflictos con el puerto 3306 de phpmyadmin
+      - "3310:3306"
     volumes:
       - ./docker/mysql/data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
